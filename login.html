@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Login PERUM MPS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+</head>
+
+<body class="hold-transition login-page">
+
+<div class="login-box">
+  <div class="login-logo">
+    <b>PERUM</b> MPS
+  </div>
+
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">Silakan Login</p>
+
+      <div class="input-group mb-3">
+        <input type="text" id="username" class="form-control" placeholder="Username">
+      </div>
+
+      <div class="input-group mb-3">
+        <input type="password" id="password" class="form-control" placeholder="Password">
+      </div>
+
+      <button onclick="login()" class="btn btn-primary btn-block">Login</button>
+
+      <p class="text-center text-danger mt-2" id="error"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+function login() {
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
+
+  // akun contoh
+  if (user === "admin" && pass === "juki") {
+    localStorage.setItem("role", "admin");
+    window.location.href = "index.html";
+  } 
+  else if (user === "user" && pass === "ihi") {
+    localStorage.setItem("role", "user");
+    window.location.href = "index.html";
+  } 
+  else {
+    document.getElementById("error").innerText = "Username atau password salah";
+  }
+}
+</script>
+
+</body>
+</html>

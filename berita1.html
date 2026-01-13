@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Berita - PERUM MPS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+  <!-- Sidebar -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="index.html" class="brand-link text-center">
+      <span class="brand-text font-weight-bold">PERUM MPS</span>
+    </a>
+    <div class="sidebar">
+      <nav>
+        <ul class="nav nav-pills nav-sidebar flex-column">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">
+              <i class="nav-icon fas fa-home"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="berita.html" class="nav-link active">
+              <i class="nav-icon fas fa-newspaper"></i>
+              <p>Berita</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="galeri.html" class="nav-link">
+              <i class="nav-icon fas fa-image"></i>
+              <p>Galeri</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <div class="content-wrapper p-3">
+    <h3>Berita</h3>
+
+    <!-- FORM ADMIN -->
+    <div class="card mb-3 admin-only">
+      <div class="card-body">
+        <h5 id="formTitle">Tambah Berita</h5>
+
+        <input type="hidden" id="editIndex">
+
+        <div class="form-group">
+          <input type="text" id="judul" class="form-control" placeholder="Judul berita">
+        </div>
+
+        <div class="form-group">
+          <textarea id="isi" class="form-control" placeholder="Isi berita"></textarea>
+        </div>
+
+        <button class="btn btn-primary btn-block" onclick="simpanBerita()">Simpan</button>
+      </div>
+    </div>
+
+    <!-- LIST BERITA -->
+    <div id="listBerita"></div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+<script>
+// role
+let role = localStorage.getItem("role");
+if (role === "user") {
+  document.querySelectorAll(".admin-only").forEach(el => el.style.display = "none");
+}
+
+// data berita
+let berita = JSON.parse(localStorage.getItem("berita")) || [];
+
+function tampilBerita() {
+  let html = "";
+  berita.forEach((b, i) => {
+    html += `
+      <div class="card mb-2">
+        <div class="card-body">
+          <h5>${b.judul}</h5>
+          <p>${b.isi}</p>
+          <small class="text-muted">${b.tanggal}</small>
+          ${role === "admin" ? `
+          <div class="mt-2">
+            <button class="btn btn-sm btn-warning" onclick="editBerita(${i})">Edit</button>
+          </div>` : ""}
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById("listBerita").innerHTML = html;
+}
+
+function simpanBerita() {
+  let judul = document.getElementById("judul").value;
+  let isi = document.getElementById("isi").value;
+  let idx = document.getElementById("editIndex").value;
+
+  if (!judul || !isi) {
+    alert("Judul dan isi wajib diisi");
+    return;
+  }
+
+  let data = {
+    judul,
+    isi,
+    tanggal: new Date().toLocaleDateString()
+  };
+
+  if (idx === "") {
+    berita.push(data);
+  } else {
+    berita[idx] = data;
+    document.getElementById("formTitle").innerText = "Tambah Berita";
+    document.getElementById("editIndex").value = "";
+  }
+
+  localStorage.setItem("berita", JSON.stringify(berita));
+  document.getElementById("judul").value = "";
+  document.getElementById("isi").value = "";
+
+  tampilBerita();
+}
+
+function editBerita(i) {
+  document.getElementById("judul").value = berita[i].judul;
+  document.getElementById("isi").value = berita[i].isi;
+  document.getElementById("editIndex").value = i;
+  document.getElementById("formTitle").innerText = "Edit Berita";
+}
+
+tampilBerita();
+</script>
+
+</body>
+</html>
